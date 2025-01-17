@@ -38,11 +38,13 @@ func main() {
 	message := string(buffer[:n])
 	fmt.Println(message)
 
-	response := []byte{0, 0, 0, 0, 0, 0, 0, 7}
+	response := []byte{0, 0, 0, 0}
+	// response := []byte{0, 0, 0, 0, 0x6f, 0x7f, 0xc6, 61}
+	response = append(response, buffer[8:13]...)
  	_, err = conn.Write(response)
+
     if err != nil {
         fmt.Println("Error writing:", err)
         return
     }
-
 }
