@@ -15,7 +15,7 @@ func main() {
 	fmt.Println("Logs from your program will appear here!")
 
 	// Uncomment this block to pass the first stage
-	
+
 	l, err := net.Listen("tcp", "0.0.0.0:9092")
 	if err != nil {
 		fmt.Println("Failed to bind to port 9092")
@@ -33,18 +33,27 @@ func main() {
 	buffer := make([]byte, 1024)
 	n, err := conn.Read(buffer)
 	if err != nil {
-    	// Handle error
+		// Handle error
 	}
 	message := string(buffer[:n])
 	fmt.Println(message)
 
-	response := []byte{0, 0, 0, 0}
-	// response := []byte{0, 0, 0, 0, 0x6f, 0x7f, 0xc6, 61}
-	response = append(response, buffer[8:13]...)
- 	_, err = conn.Write(response)
+	api_key := buffer[5:6]
+	fmt.Println(string(api_key))
 
-    if err != nil {
-        fmt.Println("Error writing:", err)
-        return
-    }
+	// message size
+	response := []byte{0, 0, 0, 0}
+
+	// add correlation id
+	response = append(response, buffer[8:12]...)
+
+	error_code35 := []byte{0, 35}
+	response = append(response, error_code35...)
+
+	_, err = conn.Write(response)
+
+	if err != nil {
+		fmt.Println("Error writing:", err)
+		return
+	}
 }
